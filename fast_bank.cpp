@@ -193,7 +193,7 @@ class Stack {
 
         string top() {
             if (operations) return operations[size-1]; 
-            else throw std::out_of_range("Долбаёб он пустой");
+            else throw std::out_of_range("он пустой");
         } 
 };
 
