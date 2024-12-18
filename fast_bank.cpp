@@ -104,7 +104,7 @@ class Deque {
                     tmp[i+1]->displayInfo();
                 }
             }
-
+ 
             tmp[0] = client;
             tmp[0]->displayInfo();
             if (data) delete[] data;
