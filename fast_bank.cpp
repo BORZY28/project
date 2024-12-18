@@ -1,26 +1,45 @@
+/*
+Borzyaev, Sidorov, Drozdov, ...
+
+██─██─████─███─████
+─███──█──█──█──█──█
+──█───████──█──█──█
+──█───█──█──█──█──█
+──█───█──█──█──████
+*/
+
 #include <iostream>
 #include <string>
 #include <ctime>
 
 using namespace std;
-// Я делал
+
+
+
 // Класс Client
 class Client {
 private:
-    int id;
-    string requestType;
-    time_t timestamp;
+    int id;                                                 // ID клиента
+    string requestType;                                     // Тип запроса
+    time_t timestamp;                                       // Время
 
 public:
+                                                            // конструктор 
     Client(int id, const string& requestType) : id(id), requestType(requestType) {
         timestamp = time(nullptr);
     }
+    
+    ~Client(){};                                            // деструктор
 
-    int getId() const { return id; }
-    string getRequestType() const { return requestType; }
-    time_t getTimestamp() const { return timestamp; }
+    // возврат ID клиента
+    int getId() const { return id; }                        
+    // возврат типа запроса
+    string getRequestType() const { return requestType; }   
+    // возврат времени
+    time_t getTimestamp() const { return timestamp; }       
 
-    void displayInfo() const {
+    // вывод информации о клиенте
+    void displayInfo() const {                              
         cout << "ID: " << id << ", Тип запроса: " << requestType 
              << ", Время: " << ctime(&timestamp) << endl;
     }
@@ -29,16 +48,20 @@ public:
 // Класс Operator
 class Operator {
 private:
-    int id;
-    bool isBusy;
+    int id;                                                  // ID оператора
+    bool isBusy;                                             // Флаг статуса  оператора(занят/свободен)
 
 public:
-    Operator(int id) : id(id), isBusy(false) {}
-    
-    bool getStatus() const { return isBusy; }
+    Operator(int id) : id(id), isBusy(false) {}             // конструктор
+    ~Operator(){};                                          // деструкторэ
 
-    string processRequest(Client* client) {
-        isBusy = true;
+    // возврат статуса
+    bool getStatus() const { return isBusy; }               
+
+    // Запрос: выводится информация о том, кого обрабатвает оператор,
+    // возвращается информация о запросе для записи в Steck
+    string processRequest(Client* client) {                 
+        isBusy = true;                                      
         cout << "Оператор " << id << " обрабатывает запрос клиента ID " << client->getId() << endl;
         isBusy = false;
         return "Оператор " + to_string(id) + " обрабатал запрос клиента ID " + to_string(client->getId()) + '\n';
@@ -47,14 +70,15 @@ public:
 
 // Реализация очереди (FIFO)
 class Queue {
-    Client** data;
-    size_t size;
+    Client** data;                                          // Массив указателей на клиентов
+    size_t size;                                            // Размер массива
 
     public:
-        Queue() {data = nullptr; size = 0;}
-        ~Queue(){delete[] data;}
+        Queue() {data = nullptr; size = 0;}                 // конструктор
+        ~Queue(){delete[] data;}                            // деструктор
 
-        void append(Client* client) {
+        // добавление клиентов в очередь в конец
+        void append(Client* client) {                       
             size += 1;
             Client** tmp = new Client* [size];
             for (size_t i = 0; i < size-1; ++i){
@@ -66,8 +90,8 @@ class Queue {
             if (data) delete[] data;
             data = tmp;
         }
-
-        void first_remove() {
+        // удаление первого клиента из  очереди
+        void first_remove() {                               
             size -= 1;
             Client** tmp = new Client* [size];
             for (size_t i = 0; i < size; ++i){
@@ -78,9 +102,9 @@ class Queue {
             data = tmp;
         }
 
-
-        void out_queue(){
-            if (data){
+        // вывод данных про всех клиентов в очереди
+        void out_queue(){                                   
+            if (data){                      
                 for(size_t i = 0; i < size; ++i){
                     data[i]->displayInfo();
                 }
@@ -89,15 +113,17 @@ class Queue {
 
 };
 
-// Реализация дека
+// Реализация дека(двухсторонняя очередь)
 class Deque {
-    Client** data;
-    size_t size;
+    Client** data;                                          // Массив указателей на клиентов
+    size_t size;                                            // Размер массива
 
     public:
-        Deque() {data = nullptr; size = 0;}
-        ~Deque(){delete[] data;}
-        void front_push(Client* client){
+        Deque() {data = nullptr; size = 0;}                 // конуструктор
+        ~Deque(){delete[] data;}                            // деструктор
+
+        // добавление клиента в начало очереди
+        void front_push(Client* client){                    
             size += 1;
             Client** tmp = new Client* [size];
 
@@ -111,8 +137,9 @@ class Deque {
             if (data) delete[] data;
             data = tmp;
         }
- 
-        void back_push(Client* client) {
+
+        // добавление клиента в конец очереди
+        void back_push(Client* client) {                   
                 size += 1;
                 Client** tmp = new Client* [size];
                 
@@ -127,6 +154,7 @@ class Deque {
                 data = tmp;
             }
 
+            // удаление клиента из начала очереди
             void front_pop() {
                 size -= 1;
                 Client** tmp = new Client* [size];
@@ -138,6 +166,7 @@ class Deque {
                 data = tmp;
             }
 
+            // удаление клиента из конца очереди
             void back_pop() {
                 size -= 1;
                 Client** tmp = new Client* [size];
@@ -149,6 +178,7 @@ class Deque {
                 data = tmp;
             }
 
+            // вывод данных про всех клиентов в очереди
             void out_line(){
             if (data){
                 for(size_t i = 0; i < size; ++i){
@@ -160,13 +190,14 @@ class Deque {
 
 // Реализация стека
 class Stack {
-    string* operations;
-    size_t size;
+    string* operations;                                         // массив операций
+    size_t size;                                                // размер массива
 
     public:
-        Stack() {operations = nullptr; size = 0;}
-        ~Stack(){delete[] operations;}
+        Stack() {operations = nullptr; size = 0;}               // конструктор
+        ~Stack(){delete[] operations;}                          // деструктор
 
+        // добавление операции
         void push(string oper) {
             size += 1;
             string* tmp = new string [size];
@@ -180,6 +211,7 @@ class Stack {
             operations = tmp;
         }
 
+        // адаление последней операции
         void pop() {
             size -= 1;
             string* tmp = new string [size];
@@ -191,6 +223,7 @@ class Stack {
             operations = tmp;
         }
 
+        // возврат последней операции
         string top() {
             if (operations) return operations[size-1]; 
             else throw std::out_of_range("он пустой");
@@ -198,21 +231,21 @@ class Stack {
 };
  
 
-// Главная функция
-int main() {
-    Operator* operators[2];
-    Stack stack_;
+// тесты в main
+// int main() {
+//     Operator* operators[2];
+//     Stack stack_;
     
-    Client client(0, "low");
-    Client client_1(1, "high");
+//     Client client(0, "low");
+//     Client client_1(1, "high");
     
-    Operator operator_(0);
-    Operator operator_1(1);
-    operators[0] = &operator_;
+//     Operator operator_(0);
+//     Operator operator_1(1);
+//     operators[0] = &operator_;
 
-    cout << stack_.top();
-    stack_.push(operators[0]->processRequest(&client_1));
-    cout << stack_.top();
+//     cout << stack_.top();
+//     stack_.push(operators[0]->processRequest(&client_1));
+//     cout << stack_.top();
 
-    return 0;
-}
+//     return 0;
+// }
