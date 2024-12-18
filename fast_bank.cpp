@@ -196,7 +196,7 @@ class Stack {
             else throw std::out_of_range("он пустой");
         } 
 };
-
+ 
 
 // Главная функция
 int main() {
