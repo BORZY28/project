@@ -110,7 +110,7 @@ class Deque {
             if (data) delete[] data;
             data = tmp;
         }
-
+ 
         void back_push(Client* client) {
                 size += 1;
                 Client** tmp = new Client* [size];
