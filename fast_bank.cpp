@@ -94,6 +94,8 @@ class Deque {
     size_t size;
 
     public:
+        Deque() {data = nullptr; size = 0;}
+        ~Deque(){delete[] data;}
         void front_push(Client* client){
             size += 1;
             Client** tmp = new Client* [size];
@@ -101,12 +103,10 @@ class Deque {
             if (data){
                 for (size_t i = 0; i < size-1; ++i){
                     tmp[i+1] = data[i];
-                    tmp[i+1]->displayInfo();
                 }
             }
  
             tmp[0] = client;
-            tmp[0]->displayInfo();
             if (data) delete[] data;
             data = tmp;
         }
@@ -155,8 +155,9 @@ class Deque {
                 }
             }
         }
-
 };
+
+
 
 // // Реализация стека
 // class Stack {
@@ -341,11 +342,14 @@ int main() {
     Client client_1(1, "high");
     Deque line_1;
     line_1.front_push(&client);
-    line_1.out_line();
     line_1.front_push(&client_1);
+    line_1.out_line();
+    line_1.back_push(&client);
+    line_1.back_push(&client_1);
     line_1.out_line();
     
     line_1.back_pop();
+    line_1.front_pop();
     line_1.out_line();
     
 
