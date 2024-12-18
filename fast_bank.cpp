@@ -14,8 +14,6 @@ Borzyaev, Sidorov, Drozdov, ...
 
 using namespace std;
 
-
-
 // Класс Client
 class Client {
 private:
@@ -28,17 +26,16 @@ public:
     Client(int id, const string& requestType) : id(id), requestType(requestType) {
         timestamp = time(nullptr);
     }
-    
-    ~Client(){};                                            // деструктор
+    ~Client(){}                                             // деструктор
 
-    // возврат ID клиента
+                                                            // возврат ID клиента
     int getId() const { return id; }                        
-    // возврат типа запроса
+                                                            // возврат типа запроса
     string getRequestType() const { return requestType; }   
-    // возврат времени
+                                                            // возврат времени
     time_t getTimestamp() const { return timestamp; }       
 
-    // вывод информации о клиенте
+                                                            // вывод информации о клиенте
     void displayInfo() const {                              
         cout << "ID: " << id << ", Тип запроса: " << requestType 
              << ", Время: " << ctime(&timestamp) << endl;
@@ -53,13 +50,13 @@ private:
 
 public:
     Operator(int id) : id(id), isBusy(false) {}             // конструктор
-    ~Operator(){};                                          // деструкторэ
+    ~Operator(){}                                           // деструктор
 
     // возврат статуса
     bool getStatus() const { return isBusy; }               
 
-    // Запрос: выводится информация о том, кого обрабатвает оператор,
-    // возвращается информация о запросе для записи в Steck
+                                                            // Запрос клиента: выводится информация о том, кого обрабатвает оператор,
+                                                            // возвращается информация о запросе для записи в Steck
     string processRequest(Client* client) {                 
         isBusy = true;                                      
         cout << "Оператор " << id << " обрабатывает запрос клиента ID " << client->getId() << endl;
@@ -77,7 +74,7 @@ class Queue {
         Queue() {data = nullptr; size = 0;}                 // конструктор
         ~Queue(){delete[] data;}                            // деструктор
 
-        // добавление клиентов в очередь в конец
+                                                            // добавление клиентов в очередь в конец
         void append(Client* client) {                       
             size += 1;
             Client** tmp = new Client* [size];
@@ -90,7 +87,7 @@ class Queue {
             if (data) delete[] data;
             data = tmp;
         }
-        // удаление первого клиента из  очереди
+                                                            // удаление первого клиента из  очереди
         void first_remove() {                               
             size -= 1;
             Client** tmp = new Client* [size];
@@ -101,8 +98,7 @@ class Queue {
             if (data) delete[] data;
             data = tmp;
         }
-
-        // вывод данных про всех клиентов в очереди
+                                                            // вывод данных про всех клиентов в очереди
         void out_queue(){                                   
             if (data){                      
                 for(size_t i = 0; i < size; ++i){
@@ -122,7 +118,7 @@ class Deque {
         Deque() {data = nullptr; size = 0;}                 // конуструктор
         ~Deque(){delete[] data;}                            // деструктор
 
-        // добавление клиента в начало очереди
+                                                            // добавление клиента в начало очереди
         void front_push(Client* client){                    
             size += 1;
             Client** tmp = new Client* [size];
@@ -137,49 +133,47 @@ class Deque {
             if (data) delete[] data;
             data = tmp;
         }
-
-        // добавление клиента в конец очереди
+                                                            // добавление клиента в конец очереди
         void back_push(Client* client) {                   
-                size += 1;
-                Client** tmp = new Client* [size];
-                
-                if (data) {
-                    for (size_t i = 0; i < size-1; ++i){
-                        tmp[i] = data[i];
-                    }
-                }
-                tmp[size-1] = client;
-
-                if (data) delete[] data;
-                data = tmp;
-            }
-
-            // удаление клиента из начала очереди
-            void front_pop() {
-                size -= 1;
-                Client** tmp = new Client* [size];
-                for (size_t i = 0; i < size; ++i){
-                    tmp[i] = data[i+1];
-                }
-
-                if (data) delete[] data;
-                data = tmp;
-            }
-
-            // удаление клиента из конца очереди
-            void back_pop() {
-                size -= 1;
-                Client** tmp = new Client* [size];
-                for (size_t i = 0; i < size; ++i){
+            size += 1;
+            Client** tmp = new Client* [size];
+            
+            if (data) {
+                for (size_t i = 0; i < size-1; ++i){
                     tmp[i] = data[i];
                 }
+            }
+            tmp[size-1] = client;
 
-                if (data) delete[] data;
-                data = tmp;
+            if (data) delete[] data;
+            data = tmp;
+        }
+                                                            // удаление клиента из начала очереди
+        void front_pop() {
+            size -= 1;
+            Client** tmp = new Client* [size];
+            for (size_t i = 0; i < size; ++i){
+                tmp[i] = data[i+1];
             }
 
-            // вывод данных про всех клиентов в очереди
-            void out_line(){
+            if (data) delete[] data;
+            data = tmp;
+        }
+
+                                                            // удаление клиента из конца очереди
+        void back_pop() {
+            size -= 1;
+            Client** tmp = new Client* [size];
+            for (size_t i = 0; i < size; ++i){
+                tmp[i] = data[i];
+            }
+
+            if (data) delete[] data;
+            data = tmp;
+        }
+
+                                                            // вывод данных про всех клиентов в очереди
+        void out_line(){
             if (data){
                 for(size_t i = 0; i < size; ++i){
                     data[i]->displayInfo();
@@ -190,14 +184,14 @@ class Deque {
 
 // Реализация стека
 class Stack {
-    string* operations;                                         // массив операций
-    size_t size;                                                // размер массива
+    string* operations;                                     // массив операций
+    size_t size;                                            // размер массива
 
     public:
-        Stack() {operations = nullptr; size = 0;}               // конструктор
-        ~Stack(){delete[] operations;}                          // деструктор
+        Stack() {operations = nullptr; size = 0;}           // конструктор
+        ~Stack(){delete[] operations;}                      // деструктор
 
-        // добавление операции
+                                                            // добавление операции
         void push(string oper) {
             size += 1;
             string* tmp = new string [size];
@@ -210,8 +204,7 @@ class Stack {
             if (operations) delete[] operations;
             operations = tmp;
         }
-
-        // адаление последней операции
+                                                            // удаление последней операции
         void pop() {
             size -= 1;
             string* tmp = new string [size];
@@ -222,8 +215,7 @@ class Stack {
             if (operations) delete[] operations;
             operations = tmp;
         }
-
-        // возврат последней операции
+                                                            // возврат последней операции
         string top() {
             if (operations) return operations[size-1]; 
             else throw std::out_of_range("он пустой");
