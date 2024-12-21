@@ -265,24 +265,28 @@ public:
 
     void request_processing()
     {
-        std::string operation;
-        bool flag = false;
-        Client* client = deque.front_pop();
-
-        for(size_t i = 0; i < 5; ++i)
+        if (deque.data == nullptr) {throw std::out_of_range("No free operators");}
+        else 
         {
-            if(!operators[i].getStatus())
-            {
-                operation = operators[i].processRequest(client);
-                flag = true;
-                break;
-            }
-        }
+            std::string operation;
+            bool flag = false;
+            Client* client = deque.front_pop();
 
-        if(flag)
-            stack.push(operation);
-        else
-            throw std::invalid_argument("No free operators");
+            for(size_t i = 0; i < 5; ++i)
+            {
+                if(!operators[i].getStatus())
+                {
+                    operation = operators[i].processRequest(client);
+                    flag = true;
+                    break;
+                }
+            }
+
+            if(flag)
+                stack.push(operation);
+            else
+                throw std::invalid_argument("No free operators");
+        }
     };
 
     void show_queue()
@@ -319,8 +323,8 @@ int main() {
     BankSystem bank;
     size_t id = 0;
 
-
     int choice = 0;
+    string request = "";
 
     while (true) {
         cout << "=== Система обслуживания клиентов банка ===\n";
@@ -333,12 +337,20 @@ int main() {
         cout << "Ваш выбор: \n";
 
         cin >> choice;
+        cout << '\n';
+
+        if (choice == 6) {break;}
 
         switch (choice){
             case 1:
-                bank.add_client(id, "Кредит");
+                
+                cout << "Введите запрос: ";
+                cin >> request;
+                bank.add_client(id, request);
+                cout << "Клиент добавлен в очередь\n";
                 id ++;
                 cout << '\n';
+                break;
             
             
             case 2:
@@ -348,23 +360,26 @@ int main() {
                 catch (std::invalid_argument){
                     cout << "Все операторы заняты, нужно подождать\n";
                     cout << '\n';
+                    break;
+                }
+                catch (std::out_of_range){
+                    cout << "Нет клиентов в очереди\n";
+                    cout << '\n';
+                    break;
                 }
                 
                 cout << '\n';
+                break;
             
             case 3:
                 bank.show_queue();
                 cout << '\n';
+                break;
             
             case 4:
-                try{
-                    bank.show_stack();
-                }
-                catch (std::out_of_range){
-                    cout << "Видимо ещё не было операций\n";
-                    cout << '\n';
-                }
-
+                bank.show_stack();
+                cout << '\n';
+                break;
             
             case 5:
                 try{
@@ -373,16 +388,15 @@ int main() {
                 catch (std::out_of_range){
                     cout << "Видимо ещё не было операций\n";
                     cout << '\n';
+                    break;
                 }
-                
-                
-            
-            case 6:
-
                 break;
-            
+                
             default:
-                cout << "\nВведены недопустимые символы\n\n";
+                cout << "Введены недопустимые символы\n\n";
+                break;
+
+            
         }
     }
 
