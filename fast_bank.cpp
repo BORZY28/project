@@ -213,21 +213,27 @@ class Stack {
         }
                                                             // удаление последней операции
         void pop() {
-            size -= 1;
-            string* tmp = new string [size];
-            for (size_t i = 0; i < size; ++i){
-                tmp[i] = operations[i+1];
+            if (size > 0) 
+            {
+                size -= 1;
+                string* tmp = new string [size];
+                for (size_t i = 0; i < size; ++i){
+                    tmp[i] = operations[i+1];
+                }
+
+                if (operations) delete[] operations;
+                operations = tmp;
             }
 
-            if (operations) delete[] operations;
-            operations = tmp;
+            else throw std::out_of_range("он пустой");
+            
         }
                                                             // возврат последней операции
         string top() {
             if (operations) return operations[size-1]; 
             else throw std::out_of_range("он пустой");
         }
-
+                                                            // Вывод операций
         void out_line()
         {
             if(operations)
@@ -243,6 +249,14 @@ class Stack {
 class BankSystem
 {
 public:
+    ~BankSystem()
+    {
+        for(size_t i = 0; i < deque.size; ++i)
+        {
+            delete deque.data[i];
+        }
+    };
+
     void add_client(int id, const std::string& requestType)
     {
         Client* client = new Client(id, requestType);
@@ -281,14 +295,12 @@ public:
         stack.out_line();
     }
 
-    ~BankSystem()
+    void cancel_last_change() 
     {
-        for(size_t i = 0; i < deque.size; ++i)
-        {
-            delete deque.data[i];
-        }
-    };
+        stack.pop();
+    }
 
+    
 private:
     Deque deque;
     Stack stack;
@@ -305,19 +317,74 @@ private:
 // тесты в main
 int main() {
     BankSystem bank;
-
-    bank.add_client(1, "low");
-    bank.add_client(2, "low");
-    bank.add_client(3, "low");
-
-    bank.request_processing();
-    bank.request_processing();
-
-    bank.request_processing();
+    size_t id = 0;
 
 
-    bank.show_stack();
-    bank.show_queue();
+    int choice = 0;
+
+    while (true) {
+        cout << "=== Система обслуживания клиентов банка ===\n";
+        cout << "1. Добавить клиента в систему\n";
+        cout << "2. Обработать запрос клиента\n";
+        cout << "3. Просмотреть состояние очередей\n";
+        cout << "4. Показать историю завершенных операций\n";
+        cout << "5. Отменить последнюю операцию\n" ;
+        cout << "6. Выход\n";
+        cout << "Ваш выбор: \n";
+
+        cin >> choice;
+
+        switch (choice){
+            case 1:
+                bank.add_client(id, "Кредит");
+                id ++;
+                cout << '\n';
+            
+            
+            case 2:
+                try{
+                    bank.request_processing();
+                }
+                catch (std::invalid_argument){
+                    cout << "Все операторы заняты, нужно подождать\n";
+                    cout << '\n';
+                }
+                
+                cout << '\n';
+            
+            case 3:
+                bank.show_queue();
+                cout << '\n';
+            
+            case 4:
+                try{
+                    bank.show_stack();
+                }
+                catch (std::out_of_range){
+                    cout << "Видимо ещё не было операций\n";
+                    cout << '\n';
+                }
+
+            
+            case 5:
+                try{
+                    bank.cancel_last_change();
+                }
+                catch (std::out_of_range){
+                    cout << "Видимо ещё не было операций\n";
+                    cout << '\n';
+                }
+                
+                
+            
+            case 6:
+
+                break;
+            
+            default:
+                cout << "\nВведены недопустимые символы\n\n";
+        }
+    }
 
     return 0;
 }
