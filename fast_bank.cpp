@@ -1,5 +1,5 @@
 /*
-Borzyaev, Sidorov, Drozdov, ...
+Borzyaev, Sidorov, Drozdov, Snezhkina, Tarasov
 
 ██─██─████─███─████
 ─███──█──█──█──█──█
