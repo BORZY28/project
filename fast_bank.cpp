@@ -52,7 +52,7 @@ public:
     Operator(int id) : id(id), isBusy(false) {}             // конструктор
     ~Operator(){}                                           // деструктор
 
-    // возврат статуса
+                                                            // возврат статуса
     bool getStatus() const { return isBusy; }               
 
                                                             // Запрос клиента: выводится информация о том, кого обрабатвает оператор,
